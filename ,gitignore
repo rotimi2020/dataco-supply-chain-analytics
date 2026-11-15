@@ -1,0 +1,15 @@
+# Sensitive and raw data
+data/raw/
+*.pbix
+
+# Python files
+__pycache__/
+*.pyc
+venv/
+.env
+
+# Temporary files
+*.tmp
+*.log
+.DS_Store
+Thumbs.db

@@ -1,0 +1,47 @@
+# DataCo Supply Chain Analytics Project
+
+## WF01: Data Preparation
+
+**Purpose:** Clean, standardize, and prepare the raw DataCo supply chain dataset for reliable analysis.
+
+**Objective:** Produce a consistent, analysis-ready dataset by handling data types, standardizing column names, converting date fields, filtering unnecessary columns, and exporting the prepared data.
+
+## WF02: Descriptive Analytics — 10 Business Questions
+
+### Question 1: Overall Delivery Performance
+What percentage of order items are delivered late, on time, shipped in advance, or cancelled?
+
+### Question 2: Shipping Mode Performance
+Which shipping modes have the highest number of late deliveries, and how do their late-delivery rates compare?
+
+### Question 3: Product Category Profitability
+Which product categories generate the highest sales revenue and recorded profit, and which categories perform poorly?
+
+### Question 4: Customer Segment Performance
+Which customer segments generate the highest sales revenue?
+
+### Question 5: Regional Sales Performance
+Which order regions generate the highest and lowest sales revenue?
+
+### Question 6: Late Delivery Rate by Shipping Mode
+Which shipping mode has the highest late-delivery rate after accounting for the number of order items handled by each mode?
+
+### Question 7: Department Performance
+Which departments contribute the most to total sales revenue?
+
+### Question 8: Market Performance
+Which markets generate the highest and lowest sales revenue?
+
+### Question 9: Actual vs. Scheduled Shipping Time
+How do actual shipping times compare with scheduled shipping times, and how often do deliveries take longer than expected?
+
+### Question 10: Monthly Sales Trend
+How does sales revenue change from month to month, and are there noticeable increases, decreases, or seasonal patterns?
+
+## WF03: Late Delivery Prediction
+
+**Purpose:** Build and evaluate a machine-learning model to predict late-delivery risk using available order, product, customer, and shipping features.
+
+## WF04: Order Volume Forecasting
+
+**Purpose:** Forecast monthly unique order volume for the next 12 months using historical order data and ARIMA time-series models.
