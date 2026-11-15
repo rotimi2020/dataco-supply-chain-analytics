@@ -99,29 +99,17 @@ I developed a five-page Power BI report to bring the analytical findings togethe
 | Late Delivery Prediction | Delivery risk analysis and model evaluation |
 | Order Volume Forecast | Historical order volumes and forecast comparison |
 
-### Report Screenshots
+### 📷 Power BI Report Previews
 
-The following images provide a preview of the report and its key analytical pages.
+The screenshots below provide a preview of the five report pages, highlighting the key visualisations and insights developed through the analysis.
 
-#### 1. Executive Overview
+| Executive Overview | Logistics Performance |
+|---|---|
+| ![DATACO Executive Overview](powerbi/screenshots/01_Executive_Overview.PNG) | ![DATACO Logistics Performance](powerbi/screenshots/02_Logistics_Performance.PNG) |
 
-![DATACO Executive Overview](powerbi/screenshots/01_Executive_Overview.PNG)
-
-#### 2. Logistics Performance
-
-![DATACO Logistics Performance](powerbi/screenshots/02_Logistics_Performance.PNG)
-
-#### 3. Supply Chain Performance
-
-![DATACO Supply Chain Performance](powerbi/screenshots/03_Supply_Chain_Performance.PNG)
-
-#### 4. Late Delivery Prediction
-
-![DATACO Late Delivery Prediction](powerbi/screenshots/04_Late_Delivery_Prediction.PNG)
-
-#### 5. Order Volume Forecast
-
-![DATACO Order Volume Forecast](powerbi/screenshots/05_Order_Volume_Forecast.PNG)
+| Supply Chain Performance | Late Delivery Prediction | Order Volume Forecast |
+|---|---|---|
+| ![DATACO Supply Chain Performance](powerbi/screenshots/03_Supply_Chain_Performance.PNG) | ![DATACO Late Delivery Prediction](powerbi/screenshots/04_Late_Delivery_Prediction.PNG) | ![DATACO Order Volume Forecast](powerbi/screenshots/05_Order_Volume_Forecast.PNG) |
 
 **[Explore the Power BI project files](https://github.com/rotimi2020/dataco-supply-chain-analytics/tree/main/powerbi)**
 
