@@ -12,6 +12,7 @@ The focus was not simply on producing charts, but on turning operational data in
 
 ## Table of Contents
 
+- [Key Findings](#key-findings)
 - [Project Overview](#project-overview)
 - [What I Worked On](#what-i-worked-on)
 - [Tools and Technologies](#tools-and-technologies)
@@ -24,6 +25,23 @@ The focus was not simply on producing charts, but on turning operational data in
 - [What This Project Demonstrates](#what-this-project-demonstrates)
 - [Data Privacy](#data-privacy)
 - [About the Author](#about-the-author)
+
+## Key Findings
+
+### Forecast evaluation
+
+The forecasting work produced a useful comparison rather than a claim that one model is universally reliable. On the seven-month holdout period, ARIMA (1,1,1) performed better than ARIMA (1,2,1):
+
+- **ARIMA (1,1,1):** MAE 228.62 | RMSE 286.40 | MAPE 11.00%
+- **ARIMA (1,2,1):** MAE 243.93 | RMSE 303.02 | MAPE 11.75%
+
+I also calculated a simple **previous-month baseline** from the actual monthly volumes in the evaluation file. For the six months where a preceding month was available (August 2017–January 2018), carrying the previous month's actual volume forward gives a MAPE of **4.43%**. This baseline is materially better than either ARIMA result on those six observations. It is not a like-for-like seven-month comparison, so it should be treated as a diagnostic rather than a definitive model ranking. It does show why a simple benchmark matters before presenting a forecast model as useful.
+
+**What this means:** the ARIMA (1,1,1) model is the stronger of the two ARIMA configurations tested, but the current evidence does not show that it beats a simple naïve forecast. The forecasting workflow needs further tuning and validation before it should guide operational decisions.
+
+### Findings still requiring verification
+
+The repository currently does not expose enough verified evidence for me to publish numerical claims about the overall late-delivery rate, the worst-performing shipping mode, the highest- and lowest-revenue regions, or the late-delivery classifier's accuracy, precision and recall. I have therefore not invented those figures. They should be added only after the relevant KNIME outputs and model-evaluation results are available and checked.
 
 ## Project Overview
 
@@ -72,7 +90,7 @@ The descriptive analysis (WF02) addresses ten business questions across delivery
 10. **Monthly Sales Trend**  
     How does sales revenue change from month to month, and are there noticeable increases, decreases, or seasonal patterns?
 
-The corresponding prepared dataset and analysis outputs are available in the repository.
+The corresponding prepared dataset and analysis outputs are available in the repository. The numerical findings should be read alongside the definitions and denominators used in each analysis.
 
 **[Explore the processed dataset and analysis outputs](https://github.com/rotimi2020/dataco-supply-chain-analytics/tree/main/data/processed)**
 
@@ -105,13 +123,13 @@ Investigated the ten business questions covering delivery performance, shipping 
 
 **Workflow:** `WF03_Late_Delivery_Prediction`
 
-Developed and evaluated a machine-learning workflow to assess late-delivery risk using available order, product, customer and shipping features.
+Developed a machine-learning workflow to assess late-delivery risk. The current README does not yet document the final algorithm, exact predictor list or classification metrics; these details need to be confirmed from the KNIME workflow and evaluation output before the model is presented as validated.
 
 ### 4. Order Volume Forecasting
 
 **Workflow:** `WF04_Order_Volume_Forecasting`
 
-Used ARIMA time-series models to forecast monthly unique order volume for a 12-month period, from February 2018 to January 2019.
+Tested two ARIMA configurations to forecast monthly unique order volume for February 2018 to January 2019. The available evaluation file covers a seven-month holdout period; a simple previous-month baseline was also checked separately as a diagnostic.
 
 **[Explore all four KNIME workflows](https://github.com/rotimi2020/dataco-supply-chain-analytics/tree/main/knime)**
 
@@ -162,9 +180,9 @@ The analysis provides a foundation for examining several practical supply chain 
 - **Shipping efficiency:** Consider both late-delivery volumes and rates when assessing shipping performance.
 - **Sales performance:** Use product, customer, department, regional and market comparisons to identify stronger and weaker sales areas.
 - **Delivery risk:** Use predictive analysis as an additional input for identifying orders that may require closer monitoring.
-- **Demand planning:** Use monthly order-volume forecasts as a planning reference, while recognising that forecasts are estimates rather than guaranteed outcomes.
+- **Demand planning:** Do not rely on the current ARIMA forecast alone. Compare it with a simple previous-month benchmark and investigate seasonal methods before using it for planning.
 
-These are potential areas for operational follow-up, not claims that specific interventions have already been implemented or proven.
+These are analysis-led areas for further investigation, not measured business improvements. In particular, do not reallocate shipment volume between carriers or shipping modes based only on late-delivery counts: compare delivery rates, service constraints, cost and capacity first.
 
 ## Repository Structure
 
