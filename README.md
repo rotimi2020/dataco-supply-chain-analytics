@@ -6,9 +6,37 @@
 
 How well is a supply chain performing? Where are delivery delays happening, which shipping methods perform better, and what can historical order data tell us about future demand?
 
-This project explores these questions using the DataCo supply chain dataset. I used KNIME to prepare and analyse the data, investigate business performance, develop a late-delivery prediction workflow and forecast monthly order volumes. I then brought the findings together in a five-page Power BI report.
+This project explores these questions using the DataCo supply chain dataset. I used KNIME to prepare and analyse the data, investigate business performance, develop a late-delivery prediction workflow and forecast monthly order volumes. The findings are presented in a five-page Power BI report.
 
 The focus was not simply on producing charts, but on turning operational data into meaningful insights that help explain supply chain performance, identify potential issues and support better-informed business decisions.
+
+## Table of Contents
+
+- [Project Overview](#project-overview)
+- [What I Worked On](#what-i-worked-on)
+- [Tools and Technologies](#tools-and-technologies)
+- [How the Project Was Built](#how-the-project-was-built)
+- [Power BI Report](#power-bi-report)
+- [Forecast Model Evaluation](#forecast-model-evaluation)
+- [Key Analytical Considerations](#key-analytical-considerations)
+- [Repository Structure](#repository-structure)
+- [Getting Started](#getting-started)
+- [What This Project Demonstrates](#what-this-project-demonstrates)
+- [Data Privacy](#data-privacy)
+- [About the Author](#about-the-author)
+
+## Project Overview
+
+The project combines descriptive analytics, predictive modelling and time-series forecasting to examine different aspects of supply chain performance.
+
+The main objectives were to:
+
+- Prepare and standardise supply chain data for analysis.
+- Evaluate delivery performance and identify shipping-related patterns.
+- Compare sales performance across products, customers, departments, regions and markets.
+- Develop a machine-learning workflow to assess late-delivery risk.
+- Forecast monthly unique order volume using ARIMA models.
+- Present analytical findings through an interactive Power BI report.
 
 ## What I Worked On
 
@@ -44,11 +72,11 @@ The descriptive analysis (WF02) addresses ten business questions across delivery
 10. **Monthly Sales Trend**  
     How does sales revenue change from month to month, and are there noticeable increases, decreases, or seasonal patterns?
 
-The corresponding analysis outputs are available in the processed-data folder.
+The corresponding prepared dataset and analysis outputs are available in the repository.
 
 **[Explore the processed dataset and analysis outputs](https://github.com/rotimi2020/dataco-supply-chain-analytics/tree/main/data/processed)**
 
-## Tools Used
+## Tools and Technologies
 
 | Tool | How I used it |
 |---|---|
@@ -124,23 +152,71 @@ I evaluated two ARIMA configurations using a seven-month holdout period.
 
 ARIMA (1,1,1) recorded lower MAE, RMSE and MAPE values, making it the better-performing of the two models on the evaluation data.
 
-The evaluation was based on a seven-month holdout period, so the results should be interpreted within that limitation.
+The evaluation was based on a seven-month holdout period, so the results should be interpreted within that limitation. Performance over a longer evaluation period would provide further evidence of the model's forecasting reliability.
 
-## Project Files
+## Key Analytical Considerations
+
+The analysis provides a foundation for examining several practical supply chain management priorities:
+
+- **Delivery performance:** Monitor late deliveries and compare delivery outcomes across shipping methods.
+- **Shipping efficiency:** Consider both late-delivery volumes and rates when assessing shipping performance.
+- **Sales performance:** Use product, customer, department, regional and market comparisons to identify stronger and weaker sales areas.
+- **Delivery risk:** Use predictive analysis as an additional input for identifying orders that may require closer monitoring.
+- **Demand planning:** Use monthly order-volume forecasts as a planning reference, while recognising that forecasts are estimates rather than guaranteed outcomes.
+
+These are potential areas for operational follow-up, not claims that specific interventions have already been implemented or proven.
+
+## Repository Structure
 
 The repository is organised to make the project materials easy to explore.
 
-- **KNIME:** Four workflows covering preparation, descriptive analytics, prediction and forecasting.
-- **Processed Data:** The prepared dataset and ten business analysis outputs.
-- **Prediction Results:** Late-delivery prediction outputs.
-- **Forecasting:** Monthly order-volume forecasts and model evaluation metrics.
-- **Power BI:** The report files and supporting screenshots.
+```text
+dataco-supply-chain-analytics/
+│
+├── data/
+│   └── processed/
+│       ├── Prepared supply chain dataset
+│       ├── Q01–Q10 analysis outputs
+│       ├── Late delivery predictions
+│       └── Order volume forecasts and model evaluation
+│
+├── documentation/
+│   └── Project documentation and business questions
+│
+├── knime/
+│   ├── WF01_Data_Preparation.knwf
+│   ├── WF02_Descriptive_Analytics.knwf
+│   ├── WF03_Late_Delivery_Prediction.knwf
+│   └── WF04_Order_Volume_Forecasting.knwf
+│
+├── powerbi/
+│   ├── Power BI report files
+│   └── screenshots/
+│       ├── 01_Executive_Overview.PNG
+│       ├── 02_Logistics_Performance.PNG
+│       ├── 03_Supply_Chain_Performance.PNG
+│       ├── 04_Late_Delivery_Prediction.PNG
+│       └── 05_Order_Volume_Forecast.PNG
+│
+└── README.md
+```
 
 The project folders provide access to the relevant materials:
 
 - [Processed data and analysis outputs](https://github.com/rotimi2020/dataco-supply-chain-analytics/tree/main/data/processed)
 - [Four KNIME workflows](https://github.com/rotimi2020/dataco-supply-chain-analytics/tree/main/knime)
 - [Power BI report files and screenshots](https://github.com/rotimi2020/dataco-supply-chain-analytics/tree/main/powerbi)
+
+## Getting Started
+
+You can explore the project using the following tools:
+
+1. **KNIME Analytics Platform:** Open the KNIME workflow files in the `knime` folder to inspect the data preparation, descriptive analysis, prediction and forecasting processes.
+2. **Microsoft Power BI Desktop:** Open the available `.pbix` report in the `powerbi` folder to explore the interactive dashboards.
+3. **Microsoft Excel:** Open the available analysis files to inspect the supporting business-question outputs.
+4. **CSV files:** Review the prepared dataset and analytical results in the `data/processed` folder.
+
+The project files are available directly through the repository links above. No separate application installation or deployment is required to explore the supplied reports and outputs, although the relevant desktop software is needed to open its native files.
 
 ## What This Project Demonstrates
 
@@ -154,10 +230,21 @@ Through this project, I applied:
 - Late-delivery risk analysis.
 - Time-series forecasting and model evaluation.
 - Interactive dashboard development using Power BI.
+- Translation of analytical findings into business-focused reporting.
 
 ## Data Privacy
 
 The original dataset contains customer-related information. Raw data containing personally identifiable information is not intended for public distribution. The repository focuses on reviewed project materials and analytical outputs.
+
+## About the Author
+
+**Rotimi S. Omosewo**
+
+Data and Reporting Analyst | Operations and Supply Chain Analytics
+
+I am interested in using data analysis, business intelligence and reporting to understand operational performance and support evidence-based decisions.
+
+[GitHub Profile](https://github.com/rotimi2020)
 
 ---
 
