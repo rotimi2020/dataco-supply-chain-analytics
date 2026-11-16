@@ -31,10 +31,10 @@ This analysis covers **180,519 order-item records across 65,752 orders**. The cl
 - [How the Project Was Built](#how-the-project-was-built)
 - [Power BI Report](#power-bi-report)
 - [Recommendations](#recommendations)
-- [Dataset Source and Attribution](#dataset-source-and-attribution)
 - [Repository Structure](#repository-structure)
 - [Getting Started](#getting-started)
 - [What This Project Demonstrates](#what-this-project-demonstrates)
+- [Dataset Source and Attribution](#dataset-source-and-attribution)
 - [Data and Privacy](#data-and-privacy)
 - [About the Author](#about-the-author)
 
@@ -67,7 +67,7 @@ First Class has the highest late-delivery rate and Standard Class the lowest. Th
 
 ### Regional and commercial picture
 
-Central Africa has the highest regional late-delivery rate at **57.96%**, while Canada has the lowest at **48.80%**. The difference is about 9.16 percentage points, although even the lowest-rate region has a substantial late share.
+Central Africa has the highest regional late-delivery rate at **57.96%**, followed by South Asia at **56.27%**. Canada has the lowest rate at **48.80%**. The difference is about 9.16 percentage points, although even the lowest-rate region has a substantial late share.
 
 By recorded sales, **Western Europe** leads at approximately **5.89 million**, followed by **Central America** at **5.67 million**. **Central Asia** has the lowest regional sales total at approximately **109,840**. The supplied project documentation does not establish a reporting currency, so these are presented as dataset sales units rather than assigned a currency.
 
@@ -85,7 +85,7 @@ The KNIME workflow uses a **Random Forest classifier with 100 trees**. It partit
 | Recall | 91.41% |
 | F1 score | 70.63% |
 
-The model catches a high share of actual late-risk cases, but its precision is much lower: many records predicted as late are not labelled late in the test export. To put that result in context, an always-late classifier on this same test set would achieve **55.00% accuracy, 55.00% precision, 100% recall and 70.96% F1**. The Random Forest improves accuracy and precision, but its **70.63% F1 is slightly below the always-late baseline**. Its zero ability to identify on-time cases as such also makes it unsuitable as a decision rule. Treat it as exploratory risk screening, not a deployment-ready model.
+The model catches a high share of records labelled late, but it also flags many records that were not late. On this test set, it correctly identifies about **17.58% of the non-late records**. For context, an always-late classifier would achieve **55.00% accuracy, 55.00% precision, 100% recall and 70.96% F1**. The Random Forest improves accuracy and precision, but its **70.63% F1 is slightly below that simple baseline**. This makes it an exploratory risk-screening result rather than a model to use for operational decisions. Treat it as exploratory risk screening, not a deployment-ready model.
 
 The selected predictors include scheduled shipping days, shipping mode, quantity, sales, product price, discounts, market, region, transaction type, category, department, customer segment, year and day of week. The target is `Late_delivery_risk`. The workflow's column filter excludes actual shipping days and `Delivery Status`, reducing two obvious forms of post-outcome leakage. However, the partition is stratified by **Category Name**, not by the target column. The reported results should therefore be read as an exploratory assessment.
 
@@ -220,7 +220,7 @@ The results point to a few practical questions worth taking back to an operation
 
 - **Review First Class exceptions first.** Its 95.32% late rate warrants a closer look at routes, order mix, promised delivery windows and service assignment. The result alone is not a reason to move volume into another mode.
 - **Separate service failures from cancellations.** Recalculate mode-level delivery rates excluding cancelled records as a sensitivity check, then compare both versions.
-- **Investigate regional variation.** Start with Central Africa and South Asia, but compare shipment volumes, product mix, shipping mode and scheduled delivery windows before attributing the difference to geography.
+- **Investigate regional variation.** Start with Central Africa and South Asia, the two highest-rate regions in the analysis, but compare shipment volumes, product mix, shipping mode and scheduled delivery windows before attributing the difference to geography.
 - **Use the classifier as a review queue, not an automatic decision.** Its high recall may help flag orders for attention, but its modest precision means teams would also review many orders that are not late.
 - **Keep forecasting honest.** ARIMA (1,1,1) is the better of the two ARIMA configurations tested, but the separate previous-month diagnostic performed better on its six comparable transitions. More validation is needed before relying on the 12-month forecast.
 
@@ -278,7 +278,7 @@ You can explore the project using the following tools:
 3. **Microsoft Excel:** Open the available analysis files to inspect the supporting business-question outputs.
 4. **CSV files:** Review the prepared dataset and analytical results in the `data/processed` folder.
 
-To reproduce the analysis from the source data, download the dataset from the [Kaggle page](https://www.kaggle.com/datasets/shashwatwork/dataco-smart-supply-chain-for-big-data-analysis) or use the [original Mendeley Data record](https://data.mendeley.com/datasets/8gx2fvg2k6/5). Open `WF01_Data_Preparation` first and check its input-file location before running it. The workflow's local file path may need to be updated for your machine. The repository does not currently document a verified KNIME version or the exact extension list, so I have not guessed those requirements.
+To reproduce the analysis from the source data, download the dataset from the [Kaggle page](https://www.kaggle.com/datasets/shashwatwork/dataco-smart-supply-chain-for-big-data-analysis) or use the [original Mendeley Data record](https://data.mendeley.com/datasets/8gx2fvg2k6/5). Open `WF01_Data_Preparation` first and check its input-file location before running it. The workflow's local file path may need to be updated for your machine. The repository does not yet specify the KNIME version or the extensions used to run the workflows.
 
 The project files are available directly through the repository links above. No separate application installation or deployment is required to explore the supplied reports and outputs, although the relevant desktop software is needed to open its native files.
 
