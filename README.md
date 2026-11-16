@@ -316,7 +316,7 @@ Data and Reporting Analyst | Operations and Supply Chain Analytics
 
 I am interested in using data analysis, business intelligence and reporting to understand operational performance and support evidence-based decisions.
 
-[GitHub Profile](https://github.com/rotimi2020)
+[LinkedIn](https://www.linkedin.com/in/rotimi-sheriff-omosewo) · [Portfolio](https://rotimi2020.github.io) · [GitHub](https://github.com/rotimi2020)
 
 ---
 
