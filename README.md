@@ -39,10 +39,52 @@ I also calculated a simple **previous-month baseline** from the actual monthly v
 
 **What this means:** the ARIMA (1,1,1) model is the stronger of the two ARIMA configurations tested, but the current evidence does not show that it beats a simple naïve forecast. The forecasting workflow needs further tuning and validation before it should guide operational decisions.
 
-### Findings still requiring verification
+### Delivery and logistics
 
-The repository currently does not expose enough verified evidence for me to publish numerical claims about the overall late-delivery rate, the worst-performing shipping mode, the highest- and lowest-revenue regions, or the late-delivery classifier's accuracy, precision and recall. I have therefore not invented those figures. They should be added only after the relevant KNIME outputs and model-evaluation results are available and checked.
+The prepared dataset contains **180,519 order-item records across 65,752 distinct orders**. At order-item level, the recorded delivery outcomes are:
 
+| Delivery status | Order items | Share |
+|---|---:|---:|
+| Late delivery | 98,977 | 54.83% |
+| Advance shipping | 41,592 | 23.04% |
+| Shipping on time | 32,196 | 17.83% |
+| Shipping cancelled | 7,754 | 4.30% |
+
+More than half of the records are labelled late. That is the clearest service-performance issue in this dataset. These percentages describe recorded order-item outcomes, not unique orders.
+
+Shipping-mode results are not what a reader might expect from the service labels:
+
+| Shipping mode | Late-delivery rate |
+|---|---:|
+| First Class | **95.32%** |
+| Second Class | **76.63%** |
+| Same Day | **45.74%** |
+| Standard Class | **38.07%** |
+
+First Class has the highest late-delivery rate and Standard Class the lowest. This is an association in the historical data, not proof that the shipping mode caused the delay. The rates include the dataset's cancelled records in the mode totals; keep that denominator in mind when interpreting comparisons.
+
+### Regional and commercial picture
+
+Central Africa has the highest regional late-delivery rate at **57.96%**, while Canada has the lowest at **48.80%**. The difference is about 9.16 percentage points, although even the lowest-rate region has a substantial late share.
+
+By recorded sales, **Western Europe** leads at approximately **5.89 million**, followed by **Central America** at **5.67 million**. **Central Asia** has the lowest regional sales total at approximately **109,840**. The supplied project documentation does not establish a reporting currency, so these are presented as dataset sales units rather than assigned a currency.
+
+Consumer customers account for approximately **19.10 million** in sales, ahead of Corporate (**11.17 million**) and Home Office (**6.52 million**). Europe is the largest market by sales at approximately **10.87 million**, narrowly ahead of LATAM (**10.28 million**). Fan Shop is the largest department by recorded sales at approximately **17.11 million**.
+
+### Late-delivery model
+
+The KNIME workflow uses a **Random Forest classifier with 100 trees**. It partitions 180,519 records into 144,415 training rows (80%) and 36,104 test rows (20%). The exported test predictions produce these metrics when compared with the actual target labels:
+
+| Metric | Test-set result |
+|---|---:|
+| Accuracy | 58.18% |
+| Precision | 57.54% |
+| Recall | 91.41% |
+| F1 score | 70.63% |
+
+The model catches a high share of actual late-risk cases, but its precision is much lower: many records predicted as late are not labelled late in the test export. Treat it as an exploratory risk-screening model, not a deployment-ready decision system.
+
+The selected predictors include scheduled shipping days, shipping mode, quantity, sales, product price, discounts, market, region, transaction type, category, department, customer segment, year and day of week. The target is `Late_delivery_risk`. The workflow's column filter excludes actual shipping days and `Delivery Status`, reducing two obvious forms of post-outcome leakage. However, the partition is stratified by **Category Name**, not by the target column. Revisit the split strategy and re-evaluate with target-stratified splitting, a clear baseline and threshold analysis before operational use.
 ## Project Overview
 
 The project combines descriptive analytics, predictive modelling and time-series forecasting to examine different aspects of supply chain performance.
@@ -123,7 +165,7 @@ Investigated the ten business questions covering delivery performance, shipping 
 
 **Workflow:** `WF03_Late_Delivery_Prediction`
 
-Developed a machine-learning workflow to assess late-delivery risk. The current README does not yet document the final algorithm, exact predictor list or classification metrics; these details need to be confirmed from the KNIME workflow and evaluation output before the model is presented as validated.
+Built a Random Forest classifier with 100 trees to estimate `Late_delivery_risk`. The workflow uses an 80/20 partition and exports predictions for 36,104 test records. On that export, accuracy is 58.18%, precision 57.54%, recall 91.41% and F1 70.63%. Actual shipping days and delivery status are excluded from the selected predictor columns. The workflow remains exploratory: its partition is stratified by Category Name rather than the target, and the results need a target-stratified re-run and threshold/baseline comparison before operational use.
 
 ### 4. Order Volume Forecasting
 
@@ -174,15 +216,15 @@ The evaluation was based on a seven-month holdout period, so the results should 
 
 ## Key Analytical Considerations
 
-The analysis provides a foundation for examining several practical supply chain management priorities:
+The results point to a few practical questions worth taking back to an operations team:
 
-- **Delivery performance:** Monitor late deliveries and compare delivery outcomes across shipping methods.
-- **Shipping efficiency:** Consider both late-delivery volumes and rates when assessing shipping performance.
-- **Sales performance:** Use product, customer, department, regional and market comparisons to identify stronger and weaker sales areas.
-- **Delivery risk:** Use predictive analysis as an additional input for identifying orders that may require closer monitoring.
-- **Demand planning:** Do not rely on the current ARIMA forecast alone. Compare it with a simple previous-month benchmark and investigate seasonal methods before using it for planning.
+- **Review First Class exceptions first.** Its 95.32% late rate warrants a closer look at routes, order mix, promised delivery windows and service assignment. The result alone is not a reason to move volume into another mode.
+- **Separate service failures from cancellations.** Recalculate mode-level delivery rates excluding cancelled records as a sensitivity check, then compare both versions.
+- **Investigate regional variation.** Start with Central Africa and South Asia, but compare shipment volumes, product mix, shipping mode and scheduled delivery windows before attributing the difference to geography.
+- **Use the classifier as a review queue, not an automatic decision.** Its high recall may help flag orders for attention, but its modest precision means teams would also review many orders that are not late.
+- **Keep forecasting honest.** ARIMA (1,1,1) is the better of the two ARIMA configurations tested, but the separate previous-month diagnostic performed better on its six comparable transitions. More validation is needed before relying on the 12-month forecast.
 
-These are analysis-led areas for further investigation, not measured business improvements. In particular, do not reallocate shipment volume between carriers or shipping modes based only on late-delivery counts: compare delivery rates, service constraints, cost and capacity first.
+These are recommendations for investigation based on the observed results, not claims of savings or improvements already achieved.
 
 ## Repository Structure
 
@@ -252,7 +294,7 @@ Through this project, I applied:
 
 ## Data Privacy
 
-The original dataset contains customer-related information. Raw data containing personally identifiable information is not intended for public distribution. The repository focuses on reviewed project materials and analytical outputs.
+The source dataset contains customer-related fields. Do not redistribute raw records containing personally identifiable information. The public project should contain only appropriately reviewed data and outputs. The supplied project files do not establish a dataset licence; check the original publisher's terms before reusing or redistributing the source data.
 
 ## About the Author
 
