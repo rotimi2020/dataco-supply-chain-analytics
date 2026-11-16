@@ -6,9 +6,21 @@
 
 How well is a supply chain performing? Where are delivery delays happening, which shipping methods perform better, and what can historical order data tell us about future demand?
 
-This project explores these questions using the DataCo supply chain dataset. I used KNIME to prepare and analyse the data, investigate business performance, develop a late-delivery prediction workflow and forecast monthly order volumes. The findings are presented in a five-page Power BI report.
+This project explores those questions using the DataCo Smart Supply Chain dataset. I used KNIME to prepare and analyse the data, investigate delivery and commercial performance, build an exploratory late-delivery classifier and test monthly order-volume forecasts. I then brought the findings together in a five-page Power BI report.
 
-The focus was not simply on producing charts, but on turning operational data into meaningful insights that help explain supply chain performance, identify potential issues and support better-informed business decisions.
+The aim was to make the analysis useful to someone making operational decisions—not just to produce charts. The results highlight where performance deserves a closer look, while being clear about the limits of the data and models.
+
+### Power BI report preview
+
+The Executive Overview is shown first so visitors can see the reporting style immediately.
+
+![DATACO Executive Overview](powerbi/screenshots/01_Executive_Overview.PNG)
+
+[Explore the Power BI report files and all five page previews](https://github.com/rotimi2020/dataco-supply-chain-analytics/tree/main/powerbi).
+
+## At a Glance
+
+This analysis covers **180,519 order-item records across 65,752 orders**. The clearest finding is a **54.83% late-delivery rate** at order-item level, with First Class showing the highest recorded late rate (**95.32%**). A Random Forest workflow identifies **91.41%** of records labelled late in its test export, but its F1 score does not outperform a simple always-late benchmark. The two ARIMA configurations tested also trail a previous-month diagnostic baseline. The project therefore focuses on what the data reveals, what the models can—and cannot—support, and where further operational investigation is justified.
 
 ## Table of Contents
 
@@ -18,26 +30,15 @@ The focus was not simply on producing charts, but on turning operational data in
 - [Tools and Technologies](#tools-and-technologies)
 - [How the Project Was Built](#how-the-project-was-built)
 - [Power BI Report](#power-bi-report)
-- [Forecast Model Evaluation](#forecast-model-evaluation)
-- [Key Analytical Considerations](#key-analytical-considerations)
+- [Recommendations](#recommendations)
+- [Dataset Source and Attribution](#dataset-source-and-attribution)
 - [Repository Structure](#repository-structure)
 - [Getting Started](#getting-started)
 - [What This Project Demonstrates](#what-this-project-demonstrates)
-- [Data Privacy](#data-privacy)
+- [Data and Privacy](#data-and-privacy)
 - [About the Author](#about-the-author)
 
 ## Key Findings
-
-### Forecast evaluation
-
-The forecasting work produced a useful comparison rather than a claim that one model is universally reliable. On the seven-month holdout period, ARIMA (1,1,1) performed better than ARIMA (1,2,1):
-
-- **ARIMA (1,1,1):** MAE 228.62 | RMSE 286.40 | MAPE 11.00%
-- **ARIMA (1,2,1):** MAE 243.93 | RMSE 303.02 | MAPE 11.75%
-
-I also calculated a simple **previous-month baseline** from the actual monthly volumes in the evaluation file. For the six months where a preceding month was available (August 2017–January 2018), carrying the previous month's actual volume forward gives a MAPE of **4.43%**. This baseline is materially better than either ARIMA result on those six observations. It is not a like-for-like seven-month comparison, so it should be treated as a diagnostic rather than a definitive model ranking. It does show why a simple benchmark matters before presenting a forecast model as useful.
-
-**What this means:** the ARIMA (1,1,1) model is the stronger of the two ARIMA configurations tested, but the current evidence does not show that it beats a simple naïve forecast. The forecasting workflow needs further tuning and validation before it should guide operational decisions.
 
 ### Delivery and logistics
 
@@ -63,6 +64,7 @@ Shipping-mode results are not what a reader might expect from the service labels
 
 First Class has the highest late-delivery rate and Standard Class the lowest. This is an association in the historical data, not proof that the shipping mode caused the delay. The rates include the dataset's cancelled records in the mode totals; keep that denominator in mind when interpreting comparisons.
 
+
 ### Regional and commercial picture
 
 Central Africa has the highest regional late-delivery rate at **57.96%**, while Canada has the lowest at **48.80%**. The difference is about 9.16 percentage points, although even the lowest-rate region has a substantial late share.
@@ -70,6 +72,7 @@ Central Africa has the highest regional late-delivery rate at **57.96%**, while 
 By recorded sales, **Western Europe** leads at approximately **5.89 million**, followed by **Central America** at **5.67 million**. **Central Asia** has the lowest regional sales total at approximately **109,840**. The supplied project documentation does not establish a reporting currency, so these are presented as dataset sales units rather than assigned a currency.
 
 Consumer customers account for approximately **19.10 million** in sales, ahead of Corporate (**11.17 million**) and Home Office (**6.52 million**). Europe is the largest market by sales at approximately **10.87 million**, narrowly ahead of LATAM (**10.28 million**). Fan Shop is the largest department by recorded sales at approximately **17.11 million**.
+
 
 ### Late-delivery model
 
@@ -82,9 +85,21 @@ The KNIME workflow uses a **Random Forest classifier with 100 trees**. It partit
 | Recall | 91.41% |
 | F1 score | 70.63% |
 
-The model catches a high share of actual late-risk cases, but its precision is much lower: many records predicted as late are not labelled late in the test export. Treat it as an exploratory risk-screening model, not a deployment-ready decision system.
+The model catches a high share of actual late-risk cases, but its precision is much lower: many records predicted as late are not labelled late in the test export. To put that result in context, an always-late classifier on this same test set would achieve **55.00% accuracy, 55.00% precision, 100% recall and 70.96% F1**. The Random Forest improves accuracy and precision, but its **70.63% F1 is slightly below the always-late baseline**. Its zero ability to identify on-time cases as such also makes it unsuitable as a decision rule. Treat it as exploratory risk screening, not a deployment-ready model.
 
 The selected predictors include scheduled shipping days, shipping mode, quantity, sales, product price, discounts, market, region, transaction type, category, department, customer segment, year and day of week. The target is `Late_delivery_risk`. The workflow's column filter excludes actual shipping days and `Delivery Status`, reducing two obvious forms of post-outcome leakage. However, the partition is stratified by **Category Name**, not by the target column. Revisit the split strategy and re-evaluate with target-stratified splitting, a clear baseline and threshold analysis before operational use.
+
+### Forecast evaluation
+
+The forecasting work produced a useful comparison rather than a claim that one model is universally reliable. On the seven-month holdout period, ARIMA (1,1,1) performed better than ARIMA (1,2,1):
+
+- **ARIMA (1,1,1):** MAE 228.62 | RMSE 286.40 | MAPE 11.00%
+- **ARIMA (1,2,1):** MAE 243.93 | RMSE 303.02 | MAPE 11.75%
+
+I also calculated a simple **previous-month baseline** from the actual monthly volumes in the evaluation file. For the six months where a preceding month was available (August 2017–January 2018), carrying the previous month's actual volume forward gives a MAPE of **4.43%**. This baseline is materially better than either ARIMA result on those six observations. It is not a like-for-like seven-month comparison, so it should be treated as a diagnostic rather than a definitive model ranking. It does show why a simple benchmark matters before presenting a forecast model as useful.
+
+**What this means:** the ARIMA (1,1,1) model is the stronger of the two ARIMA configurations tested, but the current evidence does not show that it beats a simple naïve forecast. The forecasting workflow needs further tuning and validation before it should guide operational decisions.
+
 ## Project Overview
 
 The project combines descriptive analytics, predictive modelling and time-series forecasting to examine different aspects of supply chain performance.
@@ -165,7 +180,7 @@ Investigated the ten business questions covering delivery performance, shipping 
 
 **Workflow:** `WF03_Late_Delivery_Prediction`
 
-Built a Random Forest classifier with 100 trees to estimate `Late_delivery_risk`. The workflow uses an 80/20 partition and exports predictions for 36,104 test records. On that export, accuracy is 58.18%, precision 57.54%, recall 91.41% and F1 70.63%. Actual shipping days and delivery status are excluded from the selected predictor columns. The workflow remains exploratory: its partition is stratified by Category Name rather than the target, and the results need a target-stratified re-run and threshold/baseline comparison before operational use.
+Built a Random Forest classifier with 100 trees to estimate `Late_delivery_risk`. The workflow uses an 80/20 partition and exports predictions for 36,104 test records. On that export, accuracy is 58.18%, precision 57.54%, recall 91.41% and F1 70.63%. Actual shipping days and delivery status are excluded from the selected predictor columns. The workflow remains exploratory: its partition is stratified by Category Name rather than the target. A target-stratified re-run, probability-based ROC-AUC/threshold evaluation and comparison against a simple baseline would provide a fairer assessment before operational use.
 
 ### 4. Order Volume Forecasting
 
@@ -187,34 +202,19 @@ I developed a five-page Power BI report to bring the analytical findings togethe
 | Late Delivery Prediction | Delivery risk analysis and model evaluation |
 | Order Volume Forecast | Historical order volumes and forecast comparison |
 
-### 📷 Power BI Report Previews
+### Other report pages
 
-The screenshots below provide a preview of the five report pages, highlighting the key visualisations and insights developed through the analysis.
-
-| Executive Overview | Logistics Performance |
+| Logistics Performance | Supply Chain Performance |
 |---|---|
-| ![DATACO Executive Overview](powerbi/screenshots/01_Executive_Overview.PNG) | ![DATACO Logistics Performance](powerbi/screenshots/02_Logistics_Performance.PNG) |
+| ![DATACO Logistics Performance](powerbi/screenshots/02_Logistics_Performance.PNG) | ![DATACO Supply Chain Performance](powerbi/screenshots/03_Supply_Chain_Performance.PNG) |
 
-| Supply Chain Performance | Late Delivery Prediction | Order Volume Forecast |
-|---|---|---|
-| ![DATACO Supply Chain Performance](powerbi/screenshots/03_Supply_Chain_Performance.PNG) | ![DATACO Late Delivery Prediction](powerbi/screenshots/04_Late_Delivery_Prediction.PNG) | ![DATACO Order Volume Forecast](powerbi/screenshots/05_Order_Volume_Forecast.PNG) |
+| Late Delivery Prediction | Order Volume Forecast |
+|---|---|
+| ![DATACO Late Delivery Prediction](powerbi/screenshots/04_Late_Delivery_Prediction.PNG) | ![DATACO Order Volume Forecast](powerbi/screenshots/05_Order_Volume_Forecast.PNG) |
 
 **[Explore the Power BI project files](https://github.com/rotimi2020/dataco-supply-chain-analytics/tree/main/powerbi)**
 
-## Forecast Model Evaluation
-
-I evaluated two ARIMA configurations using a seven-month holdout period.
-
-| Model | MAE | RMSE | MAPE |
-|---|---:|---:|---:|
-| ARIMA (1,1,1) | 228.62 | 286.40 | 11.00% |
-| ARIMA (1,2,1) | 243.93 | 303.02 | 11.75% |
-
-ARIMA (1,1,1) recorded lower MAE, RMSE and MAPE values, making it the better-performing of the two models on the evaluation data.
-
-The evaluation was based on a seven-month holdout period, so the results should be interpreted within that limitation. Performance over a longer evaluation period would provide further evidence of the model's forecasting reliability.
-
-## Key Analytical Considerations
+## Recommendations
 
 The results point to a few practical questions worth taking back to an operations team:
 
@@ -263,6 +263,8 @@ dataco-supply-chain-analytics/
 
 The project folders provide access to the relevant materials:
 
+- [Project documentation](https://github.com/rotimi2020/dataco-supply-chain-analytics/tree/main/documentation)
+
 - [Processed data and analysis outputs](https://github.com/rotimi2020/dataco-supply-chain-analytics/tree/main/data/processed)
 - [Four KNIME workflows](https://github.com/rotimi2020/dataco-supply-chain-analytics/tree/main/knime)
 - [Power BI report files and screenshots](https://github.com/rotimi2020/dataco-supply-chain-analytics/tree/main/powerbi)
@@ -275,6 +277,8 @@ You can explore the project using the following tools:
 2. **Microsoft Power BI Desktop:** Open the available `.pbix` report in the `powerbi` folder to explore the interactive dashboards.
 3. **Microsoft Excel:** Open the available analysis files to inspect the supporting business-question outputs.
 4. **CSV files:** Review the prepared dataset and analytical results in the `data/processed` folder.
+
+To reproduce the analysis from the source data, download the dataset from the [Kaggle page](https://www.kaggle.com/datasets/shashwatwork/dataco-smart-supply-chain-for-big-data-analysis) or use the [original Mendeley Data record](https://data.mendeley.com/datasets/8gx2fvg2k6/5). Open `WF01_Data_Preparation` first and check its input-file location before running it. The workflow's local file path may need to be updated for your machine. The repository does not currently document a verified KNIME version or the exact extension list, so I have not guessed those requirements.
 
 The project files are available directly through the repository links above. No separate application installation or deployment is required to explore the supplied reports and outputs, although the relevant desktop software is needed to open its native files.
 
@@ -292,9 +296,17 @@ Through this project, I applied:
 - Interactive dashboard development using Power BI.
 - Translation of analytical findings into business-focused reporting.
 
-## Data Privacy
+## Dataset Source and Attribution
 
-The source dataset contains customer-related fields. Do not redistribute raw records containing personally identifiable information. The public project should contain only appropriately reviewed data and outputs. The supplied project files do not establish a dataset licence; check the original publisher's terms before reusing or redistributing the source data.
+I downloaded the dataset from the [Kaggle copy uploaded by Shashwat Tiwari](https://www.kaggle.com/datasets/shashwatwork/dataco-smart-supply-chain-for-big-data-analysis). Kaggle is the download location I used; the original dataset record is published on Mendeley Data by **Fabian Constante, Fernando Silva and António Pereira (2019)**.
+
+**Original dataset citation:** Constante, F., Silva, F. and Pereira, A. (2019). *DataCo SMART SUPPLY CHAIN FOR BIG DATA ANALYSIS* (Version 5). Mendeley Data. https://doi.org/10.17632/8gx2fvg2k6.5
+
+The Mendeley Data record identifies the dataset as **Creative Commons Attribution 4.0 International (CC BY 4.0)**. Reuse must retain appropriate attribution, provide the licence link and indicate changes where applicable. This attribution applies to the dataset as identified in that Mendeley record; it does not automatically license my analysis code, dashboard design or other project materials.
+
+## Data and Privacy
+
+This repository contains project materials, a prepared dataset and analytical outputs; it is not a copy of the full original download package. The source data includes customer-related fields, so I have not included the raw download as a public repository asset. Anyone reproducing the analysis should obtain the dataset from its cited source, review the fields before sharing any extracts, and avoid publishing identifiable customer information.
 
 ## About the Author
 
