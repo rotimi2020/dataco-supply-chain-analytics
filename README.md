@@ -87,7 +87,7 @@ The KNIME workflow uses a **Random Forest classifier with 100 trees**. It partit
 
 The model catches a high share of actual late-risk cases, but its precision is much lower: many records predicted as late are not labelled late in the test export. To put that result in context, an always-late classifier on this same test set would achieve **55.00% accuracy, 55.00% precision, 100% recall and 70.96% F1**. The Random Forest improves accuracy and precision, but its **70.63% F1 is slightly below the always-late baseline**. Its zero ability to identify on-time cases as such also makes it unsuitable as a decision rule. Treat it as exploratory risk screening, not a deployment-ready model.
 
-The selected predictors include scheduled shipping days, shipping mode, quantity, sales, product price, discounts, market, region, transaction type, category, department, customer segment, year and day of week. The target is `Late_delivery_risk`. The workflow's column filter excludes actual shipping days and `Delivery Status`, reducing two obvious forms of post-outcome leakage. However, the partition is stratified by **Category Name**, not by the target column. Revisit the split strategy and re-evaluate with target-stratified splitting, a clear baseline and threshold analysis before operational use.
+The selected predictors include scheduled shipping days, shipping mode, quantity, sales, product price, discounts, market, region, transaction type, category, department, customer segment, year and day of week. The target is `Late_delivery_risk`. The workflow's column filter excludes actual shipping days and `Delivery Status`, reducing two obvious forms of post-outcome leakage. However, the partition is stratified by **Category Name**, not by the target column. The reported results should therefore be read as an exploratory assessment.
 
 ### Forecast evaluation
 
@@ -180,7 +180,7 @@ Investigated the ten business questions covering delivery performance, shipping 
 
 **Workflow:** `WF03_Late_Delivery_Prediction`
 
-Built a Random Forest classifier with 100 trees to estimate `Late_delivery_risk`. The workflow uses an 80/20 partition and exports predictions for 36,104 test records. On that export, accuracy is 58.18%, precision 57.54%, recall 91.41% and F1 70.63%. Actual shipping days and delivery status are excluded from the selected predictor columns. The workflow remains exploratory: its partition is stratified by Category Name rather than the target. A target-stratified re-run, probability-based ROC-AUC/threshold evaluation and comparison against a simple baseline would provide a fairer assessment before operational use.
+Built a Random Forest classifier with 100 trees to estimate `Late_delivery_risk`. The workflow uses an 80/20 partition and exports predictions for 36,104 test records. On that export, accuracy is 58.18%, precision 57.54%, recall 91.41% and F1 70.63%. Actual shipping days and delivery status are excluded from the selected predictor columns. The workflow is presented as an exploratory assessment of late-delivery risk.
 
 ### 4. Order Volume Forecasting
 
