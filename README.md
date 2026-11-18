@@ -80,6 +80,14 @@ The Power BI report has five pages: Executive Overview, Logistics Performance, S
 - I split the model data by Category Name, not by the target. Treat the model numbers as rough.
 - The baseline comparison covers six months, not seven, because the first month has no previous month to copy.
 
+### Model Performance and Data Limitations
+
+The late-delivery model identifies most delayed items, but its relatively low precision means it also produces many false alarms. The analysis does not establish one single cause; the available features and the way the data is structured may limit how well the model separates late and on-time deliveries.
+
+The forecasting evaluation covers seven months (July 2017–January 2018). The monthly sales output also shows a sharp decline towards the end of the available dataset, which may indicate incomplete data coverage rather than a genuine change in business activity. The forecast should therefore be interpreted with caution.
+
+These results are useful as an exploratory analysis, but more complete operational data and further testing would be needed before using either model to support real business decisions.
+
 ## What I would do next
 
 - Re-split the data on the target and add a threshold and AUC check for the classifier.
